@@ -832,7 +832,11 @@ AdbcStatusCode PostgresStatement::CreateBulkTable(
     const struct ArrowSchema& source_schema,
     const std::vector<struct ArrowSchemaView>& source_schema_fields,
     struct AdbcError* error) {
-  std::string create = "CREATE TABLE ";
+  if (ingest_.temporary) {
+    std::string create = "CREATE TEMPORARY TABLE ";
+  } else {
+    std::string create = "CREATE TABLE ";
+  }
   switch (ingest_.mode) {
     case IngestMode::kCreate:
       // Nothing to do
@@ -858,9 +862,6 @@ AdbcStatusCode PostgresStatement::CreateBulkTable(
     case IngestMode::kCreateAppend:
       create += "IF NOT EXISTS ";
       break;
-  }
-  create += ingest_.target;
-  create += " (";
 
   for (size_t i = 0; i < source_schema_fields.size(); i++) {
     if (i > 0) create += ", ";
@@ -1210,6 +1211,8 @@ AdbcStatusCode PostgresStatement::SetOption(const char* key, const char* value,
       ingest_.mode = IngestMode::kReplace;
     } else if (std::strcmp(value, ADBC_INGEST_OPTION_MODE_CREATE_APPEND) == 0) {
       ingest_.mode = IngestMode::kCreateAppend;
+    } else if (std::strcmp(value, ADBC_INGEST_OPTION_TEMPORARY) == 0) {
+      ingest_.temporary = true;
     } else {
       SetError(error, "[libpq] Invalid value '%s' for option '%s'", value, key);
       return ADBC_STATUS_INVALID_ARGUMENT;

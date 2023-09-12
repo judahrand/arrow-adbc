@@ -156,6 +156,7 @@ class PostgresStatement {
   struct {
     std::string target;
     IngestMode mode = IngestMode::kCreate;
+    bool temporary = false;
   } ingest_;
 
   TupleReader reader_;

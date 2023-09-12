@@ -792,6 +792,7 @@ class Cursor(_Closeable):
         table_name: str,
         data: Union[pyarrow.RecordBatch, pyarrow.Table, pyarrow.RecordBatchReader],
         mode: Literal["append", "create", "replace", "create_append"] = "create",
+        temporary: bool = False,
     ) -> int:
         """
         Ingest Arrow data into a database table.
@@ -812,6 +813,9 @@ class Cursor(_Closeable):
             - 'create': create a table and insert (error if table exists)
             - 'create_append': create a table (if not exists) and insert
             - 'replace': drop existing table (if any), then same as 'create'
+
+        temporary
+            If the table is created whether to use a temporary table.
 
         Returns
         -------
@@ -837,6 +841,7 @@ class Cursor(_Closeable):
             **{
                 _lib.INGEST_OPTION_TARGET_TABLE: table_name,
                 _lib.INGEST_OPTION_MODE: c_mode,
+                _lib.INGEST_OPTION_MODE_TEMPORARY: temporary,
             }
         )
 

@@ -66,6 +66,7 @@ cdef extern from "adbc.h" nogil:
     cdef const char* ADBC_INGEST_OPTION_MODE_CREATE
     cdef const char* ADBC_INGEST_OPTION_MODE_REPLACE
     cdef const char* ADBC_INGEST_OPTION_MODE_CREATE_APPEND
+    cdef const char* ADBC_INGEST_OPTION_MODE_TEMPORARY
 
     cdef int ADBC_OBJECT_DEPTH_ALL
     cdef int ADBC_OBJECT_DEPTH_CATALOGS

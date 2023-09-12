@@ -1094,7 +1094,11 @@ AdbcStatusCode SqliteStatementInitIngest(struct SqliteStatement* stmt,
     return ADBC_STATUS_INTERNAL;
   }
 
-  sqlite3_str_appendf(create_query, "CREATE TABLE %Q (", stmt->target_table);
+  if (stmt->temporary) {
+    sqlite3_str_appendf(create_query, "CREATE TEMPORARY TABLE %Q (", stmt->target_table);
+  } else {
+    sqlite3_str_appendf(create_query, "CREATE TABLE %Q (", stmt->target_table);
+  }
   if (sqlite3_str_errcode(create_query)) {
     SetError(error, "[SQLite] Failed to build CREATE: %s", sqlite3_errmsg(stmt->conn));
     code = ADBC_STATUS_INTERNAL;
@@ -1467,6 +1471,8 @@ AdbcStatusCode SqliteStatementSetOption(struct AdbcStatement* statement, const c
       stmt->append = 1;
     } else if (strcmp(value, ADBC_INGEST_OPTION_MODE_CREATE) == 0) {
       stmt->append = 0;
+    } else if (strcmp(value, ADBC_INGEST_OPTION_TEMPORARY) == 0) {
+      stmt->temporary = 1;
     } else {
       SetError(error, "[SQLite] Invalid statement option value %s=%s", key, value);
       return ADBC_STATUS_INVALID_ARGUMENT;

@@ -52,6 +52,7 @@ struct SqliteStatement {
   // -- Ingest state ----------------------------------------
   char* target_table;
   char append;
+  char temporary;
 
   // -- Query options ---------------------------------------
   int batch_size;

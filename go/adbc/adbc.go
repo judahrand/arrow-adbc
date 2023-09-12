@@ -244,6 +244,7 @@ const (
 	OptionValueIngestModeAppend       = "adbc.ingest.mode.append"
 	OptionValueIngestModeReplace      = "adbc.ingest.mode.replace"
 	OptionValueIngestModeCreateAppend = "adbc.ingest.mode.create_append"
+	OptionValueIngestModeTemporary    = "adbc.ingest.mode.temporary"
 	OptionKeyURI                      = "uri"
 	OptionKeyUsername                 = "username"
 	OptionKeyPassword                 = "password"

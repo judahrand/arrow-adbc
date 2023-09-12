@@ -46,6 +46,7 @@ type statement struct {
 	query       string
 	targetTable string
 	ingestMode  string
+	temporary   bool
 
 	bound      arrow.Record
 	streamBind array.RecordReader
@@ -118,6 +119,15 @@ func (st *statement) SetOption(key string, val string) error {
 			fallthrough
 		case adbc.OptionValueIngestModeCreateAppend:
 			st.ingestMode = val
+		case adbc.OptionValueIngestModeTemporary:
+			parsed_val, err := strconv.ParseBool(val)
+			if err != nil {
+				return adbc.Error{
+					Msg:  fmt.Sprintf("invalid statement option %s=%s", key, val),
+					Code: adbc.StatusInvalidArgument,
+				}
+			}
+			st.temporary = parsed_val
 		default:
 			return adbc.Error{
 				Msg:  fmt.Sprintf("invalid statement option %s=%s", key, val),
@@ -257,7 +267,11 @@ func (st *statement) initIngest(ctx context.Context) (string, error) {
 		createBldr, insertBldr strings.Builder
 	)
 
-	createBldr.WriteString("CREATE TABLE ")
+	if st.temporary {
+		createBldr.WriteString("CREATE TEMPORARY TABLE ")
+	} else {
+		createBldr.WriteString("CREATE TABLE")
+	}
 	if st.ingestMode == adbc.OptionValueIngestModeCreateAppend {
 		createBldr.WriteString(" IF NOT EXISTS ")
 	}

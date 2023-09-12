@@ -754,6 +754,9 @@ const struct AdbcError* AdbcErrorFromArrayStream(struct ArrowArrayStream* stream
 ///   schema of the data to append (ADBC_STATUS_ALREADY_EXISTS).
 /// \since ADBC API revision 1.1.0
 #define ADBC_INGEST_OPTION_MODE_CREATE_APPEND "adbc.ingest.mode.create_append"
+/// \brief If the table is created create as a temporary table.
+/// \since ***Experimental*** ADBC API revision 1.1.0
+#define ADBC_INGEST_OPTION_TEMPORARY "adbc.ingest.mode.temporary"
 
 /// @}
 

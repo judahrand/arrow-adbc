@@ -269,6 +269,30 @@ def test_stmt_ingest_multi(postgres: dbapi.Connection) -> None:
         assert cur.fetch_arrow_table() == table
 
 
+def test_ingest_transaction(postgres: dbapi.Connection) -> None:
+    table = pyarrow.table(
+        [
+            [1, 2, 3],
+            ["a", None, "b"],
+        ],
+        names=["ints", "strs"],
+    )
+
+    table_name = "test_ingest_transaction"
+    with postgres.cursor() as cur:
+        cur.execute(f"DROP TABLE IF EXISTS {table_name}")
+
+        cur.adbc_ingest(table_name, table, mode="create")
+        cur.execute("SELECT * FROM test_ingest ORDER BY ints")
+        assert cur.fetch_arrow_table() == table
+
+        postgres.rollback()
+        with pytest.raises(
+            postgres.ProgrammingError, match=f'"public.{table_name}" does not exist'
+        ):
+            cur.execute(f"SELECT * FROM {table_name}")
+
+
 def test_ddl(postgres: dbapi.Connection):
     with postgres.cursor() as cur:
         cur.execute("DROP TABLE IF EXISTS test_ddl")

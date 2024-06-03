@@ -550,6 +550,7 @@ jobs:
           env PYTHON=3.9 docker-compose run python-wheel-manylinux-test
           env PYTHON=3.10 docker-compose run python-wheel-manylinux-test
           env PYTHON=3.11 docker-compose run python-wheel-manylinux-test
+          env PYTHON=3.12 docker-compose run python-wheel-manylinux-test
 
   python-macos:
     name: "Python ${{ matrix.arch }} macOS"
@@ -618,6 +619,7 @@ jobs:
           sudo ci/scripts/install_python.sh macos 3.9
           sudo ci/scripts/install_python.sh macos 3.10
           sudo ci/scripts/install_python.sh macos 3.11
+          sudo ci/scripts/install_python.sh macos 3.12
           popd
 
       - name: Build wheel
@@ -662,6 +664,12 @@ jobs:
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11 -m venv test-env-311
           source test-env-311/bin/activate
           export PYTHON_VERSION=3.11
+          ./ci/scripts/python_wheel_unix_test.sh $(pwd)
+          deactivate
+
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.12 -m venv test-env-312
+          source test-env-312/bin/activate
+          export PYTHON_VERSION=3.12
           ./ci/scripts/python_wheel_unix_test.sh $(pwd)
           deactivate
 

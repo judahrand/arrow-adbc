@@ -694,7 +694,7 @@ test_linux_wheels() {
     local arch="x86_64"
   fi
 
-  local python_versions="${TEST_PYTHON_VERSIONS:-3.9 3.10 3.11}"
+  local python_versions="${TEST_PYTHON_VERSIONS:-3.9 3.10 3.11 3.12}"
 
   for python in ${python_versions}; do
     local pyver=${python/m}
@@ -709,7 +709,7 @@ test_linux_wheels() {
 }
 
 test_macos_wheels() {
-  local python_versions="3.9 3.10 3.11"
+  local python_versions="3.9 3.10 3.11 3.12"
   # apple silicon processor
   if [ "$(uname -m)" = "arm64" ]; then
     local platform_tags="arm64"
